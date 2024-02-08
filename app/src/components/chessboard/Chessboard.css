@@ -6,15 +6,3 @@
     height: 800px;
 }
 
-.tile{
-    width: 100px;
-    height: 100px;
-}
-
-#shessboard .green{
-    background-color: green;
-}
-
-#shessboard .white{
-    background-color: white;
-}
