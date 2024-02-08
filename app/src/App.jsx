@@ -1,11 +1,18 @@
 import { useState } from 'react'
+import Chessboard from './components/chessboard/Chessboard'
+import './styles.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
 <>
-<h1>Hello world</h1>
+    <div className='app'>
+        <Chessboard />   
+
+    </div>
+
+
 </>
   )
 }
