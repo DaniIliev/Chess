@@ -4,6 +4,36 @@ import './Chessboard.css'
 const horizontalAxis = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const verticalAxis = ['1','2','3','4','5','6','7','8']
 
+let activePiece = undefined
+
+function grabPiece(e){
+    const element = e.target
+    if(element.classList.contains('chess-piece')){
+
+        const x = e.clientX - 50;
+        const y = e.clientY - 50;
+
+        element.style.position = 'absolute'
+        element.style.left = `${x}px`
+        element.style.top = `${y}px`
+
+        activePiece = element;
+    }
+}
+
+function movePiece(e){
+
+    if(activePiece){
+        const x = e.clientX
+        const y = e.clientY
+
+        activePiece.style.position = "absolute"
+        activePiece.style.left = `${x}px`
+        activePiece.style.top = `${y}px` 
+    }
+}
+
+
 
 export default function Chessboard(){
     let board = [];
@@ -47,7 +77,11 @@ export default function Chessboard(){
             board.push(<Tile image={image} number={number} key={image + verticalAxis[j] + horizontalAxis[i]}/>)
         }
     }
-    return <div id="shessboard">
+    return <div  
+            onMouseMove={(e) => movePiece(e)} 
+            onMouseDown={e => grabPiece(e)} 
+            onMouseUp={e => dropPiece(e)}
+            id="shessboard">
                 {board}
             </div>
 }

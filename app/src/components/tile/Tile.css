@@ -4,17 +4,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* display: grid;
-    place-content: center;
-    width: 100px;
-    height: 100px; */
+    /* position: relative; */
 }
 .tile .chess-piece {
     width: 50px;
     height: 50px;
     background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
+    position: center;
     margin: 0 auto;
 }
 
