@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Tile from '../tile/Tile';
 import './Chessboard.css'
 
@@ -6,27 +6,35 @@ const horizontalAxis = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const verticalAxis = ['1','2','3','4','5','6','7','8']
 
 
+const initialBoardState = []
 
 
 export default function Chessboard(){
-    const chessboardRef = useRef(null)
-    let board = [];
-    let pieces = []
+    const [gridX, setGridX] = useState(0)
+    const [gridY, setGridY] = useState(0)
 
-    let activePiece = undefined
+    const [pieces, setPieces] = useState(initialBoardState)
+    const [activePiece, setActivePiece] = useState(undefined)
+    const chessboardRef = useRef(null)
+
+    let board = [];
 
     function grabPiece(e){
     const element = e.target
-    if(element.classList.contains('chess-piece')){
+    const chessboard = chessboardRef.current
+    if(element.classList.contains('chess-piece') && chessboard){
 
-        const x = e.clientX-50;
-        const y = e.clientY-50;
+        setGridX(Math.floor((e.clientX - chessboard.offsetLeft) / 100)) 
+        setGridY(Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100)));
+
+        const x = e.clientX-30;
+        const y = e.clientY-30;
 
         element.style.position = 'absolute'
         element.style.left = `${x}px`
         element.style.top = `${y}px`
 
-        activePiece = element;
+        setActivePiece(element);
     }
     }
 
@@ -35,14 +43,14 @@ export default function Chessboard(){
     const chessboard = chessboardRef.current
 
     if(activePiece && chessboard){
-        const minX = chessboard.offsetLeft-25;
-        const minY = chessboard.offsetTop-25;
+        const minX = chessboard.offsetLeft;
+        const minY = chessboard.offsetTop;
 
-        const maxX = chessboard.offsetLeft + chessboard.clientWidth-75;
-        const maxY = chessboard.offsetTop + chessboard.clientHeight-75;
+        const maxX = chessboard.offsetLeft + chessboard.clientWidth-50;
+        const maxY = chessboard.offsetTop + chessboard.clientHeight-50;
 
-        const x = e.clientX-50;
-        const y = e.clientY-50;
+        const x = e.clientX;
+        const y = e.clientY;
 
         activePiece.style.position = "absolute"
 
@@ -66,8 +74,23 @@ export default function Chessboard(){
     }
 
     function dropPiece(e){
-        if(activePiece){
-            activePiece = undefined
+        const chessboard = chessboardRef.current
+
+        if(activePiece && chessboard){
+            const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100)
+            const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));
+
+            setPieces((value) => {
+                const pieses = value.map((p) => {
+                    if(p.x == gridX && p.y === gridY){
+                        p.x = x;
+                        p.y = y
+                    }
+                    return p
+                })
+                return pieses
+            })
+            setActivePiece(undefined)
         }
     }
 
@@ -75,23 +98,23 @@ export default function Chessboard(){
         const type = p === 0 ? 'solid' : 'regular'
         const y = p === 0 ? 7 : 0
 
-    pieces.push({image: `icons/chess-rook-${type}.svg`, x: 0, y:y})
-    pieces.push({image: `icons/chess-knight-${type}.svg`, x: 1, y:y})
-    pieces.push({image: `icons/chess-bishop-${type}.svg`, x: 2, y:y})
-    pieces.push({image: `icons/chess-queen-${type}.svg`, x: 3, y:y})
-    pieces.push({image: `icons/chess-king-${type}.svg`, x: 4, y:y})
-    pieces.push({image: `icons/chess-bishop-${type}.svg`, x: 5, y:y})
-    pieces.push({image: `icons/chess-knight-${type}.svg`, x: 6, y:y})
-    pieces.push({image: `icons/chess-rook-${type}.svg`, x: 7, y:y})
+    initialBoardState.push({image: `icons/chess-rook-${type}.svg`, x: 0, y:y})
+    initialBoardState.push({image: `icons/chess-knight-${type}.svg`, x: 1, y:y})
+    initialBoardState.push({image: `icons/chess-bishop-${type}.svg`, x: 2, y:y})
+    initialBoardState.push({image: `icons/chess-queen-${type}.svg`, x: 3, y:y})
+    initialBoardState.push({image: `icons/chess-king-${type}.svg`, x: 4, y:y})
+    initialBoardState.push({image: `icons/chess-bishop-${type}.svg`, x: 5, y:y})
+    initialBoardState.push({image: `icons/chess-knight-${type}.svg`, x: 6, y:y})
+    initialBoardState.push({image: `icons/chess-rook-${type}.svg`, x: 7, y:y})
 
     }
 
     for(let i = 0; i < 8; i++){
-        pieces.push({image: 'icons/chess-pawn-solid.svg', x: i, y:6})
+        initialBoardState.push({image: 'icons/chess-pawn-solid.svg', x: i, y:6})
     }
 
     for(let i = 0; i < 8; i++){
-        pieces.push({image: 'icons/chess-pawn-regular.svg', x: i, y:1})
+        initialBoardState.push({image: 'icons/chess-pawn-regular.svg', x: i, y:1})
     }
 
 
