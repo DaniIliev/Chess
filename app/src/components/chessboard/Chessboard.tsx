@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react';
 import Tile from '../tile/Tile';
 import './Chessboard.css'
+import { Piece, PieceType, TeamType } from '../../types';
 
 const horizontalAxis = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const verticalAxis = ['1','2','3','4','5','6','7','8']
 
 
-const initialBoardState = []
+const initialBoardState:Piece[] = []
 
 
 export default function Chessboard(){
@@ -14,13 +15,15 @@ export default function Chessboard(){
     const [gridY, setGridY] = useState(0)
 
     const [pieces, setPieces] = useState(initialBoardState)
-    const [activePiece, setActivePiece] = useState(undefined)
-    const chessboardRef = useRef(null)
+    const [activePiece, setActivePiece] = useState<HTMLElement | null>(null)
+    const chessboardRef = useRef<HTMLDivElement>(null)
 
     let board = [];
 
-    function grabPiece(e){
-    const element = e.target
+    function grabPiece(e: React.MouseEvent){
+
+    const element = e.target as HTMLElement
+
     const chessboard = chessboardRef.current
     if(element.classList.contains('chess-piece') && chessboard){
 
@@ -38,7 +41,7 @@ export default function Chessboard(){
     }
     }
 
-    function movePiece(e){
+    function movePiece(e: React.MouseEvent){
 
     const chessboard = chessboardRef.current
 
@@ -73,7 +76,7 @@ export default function Chessboard(){
     }
     }
 
-    function dropPiece(e){
+    function dropPiece(e: React.MouseEvent){
         const chessboard = chessboardRef.current
 
         if(activePiece && chessboard){
@@ -90,31 +93,32 @@ export default function Chessboard(){
                 })
                 return pieses
             })
-            setActivePiece(undefined)
+            setActivePiece(null)
         }
     }
 
     for(let p = 0; p < 2; p++){
-        const type = p === 0 ? 'solid' : 'regular'
-        const y = p === 0 ? 7 : 0
+        const teamType = (p===0) ? TeamType.OPPONENT : TeamType.OUR
+        const type = teamType === TeamType.OPPONENT ? 'solid' : 'regular'
+        const y = teamType === TeamType.OPPONENT ? 7 : 0
 
-    initialBoardState.push({image: `icons/chess-rook-${type}.svg`, x: 0, y:y})
-    initialBoardState.push({image: `icons/chess-knight-${type}.svg`, x: 1, y:y})
-    initialBoardState.push({image: `icons/chess-bishop-${type}.svg`, x: 2, y:y})
-    initialBoardState.push({image: `icons/chess-queen-${type}.svg`, x: 3, y:y})
-    initialBoardState.push({image: `icons/chess-king-${type}.svg`, x: 4, y:y})
-    initialBoardState.push({image: `icons/chess-bishop-${type}.svg`, x: 5, y:y})
-    initialBoardState.push({image: `icons/chess-knight-${type}.svg`, x: 6, y:y})
-    initialBoardState.push({image: `icons/chess-rook-${type}.svg`, x: 7, y:y})
+    initialBoardState.push({image: `icons/chess-rook-${type}.svg`, x: 0, y:y, type: PieceType.ROCK, team: teamType})
+    initialBoardState.push({image: `icons/chess-knight-${type}.svg`, x: 1, y:y, type: PieceType.KNIGHT, team: teamType})
+    initialBoardState.push({image: `icons/chess-bishop-${type}.svg`, x: 2, y:y, type: PieceType.BITSHOP, team: teamType})
+    initialBoardState.push({image: `icons/chess-queen-${type}.svg`, x: 3, y:y, type: PieceType.QUEEN , team: teamType})
+    initialBoardState.push({image: `icons/chess-king-${type}.svg`, x: 4, y:y, type: PieceType.KING , team: teamType})
+    initialBoardState.push({image: `icons/chess-bishop-${type}.svg`, x: 5, y:y, type: PieceType.BITSHOP , team: teamType})
+    initialBoardState.push({image: `icons/chess-knight-${type}.svg`, x: 6, y:y, type: PieceType.KNIGHT , team: teamType})
+    initialBoardState.push({image: `icons/chess-rook-${type}.svg`, x: 7, y:y, type: PieceType.ROCK , team: teamType})
 
     }
 
     for(let i = 0; i < 8; i++){
-        initialBoardState.push({image: 'icons/chess-pawn-solid.svg', x: i, y:6})
+        initialBoardState.push({image: 'icons/chess-pawn-solid.svg', x: i, y:6, type: PieceType.PAWN, team: TeamType.OPPONENT})
     }
 
     for(let i = 0; i < 8; i++){
-        initialBoardState.push({image: 'icons/chess-pawn-regular.svg', x: i, y:1})
+        initialBoardState.push({image: 'icons/chess-pawn-regular.svg', x: i, y:1, type: PieceType.PAWN, team: TeamType.OUR})
     }
 
 

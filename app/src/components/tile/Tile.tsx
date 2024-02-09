@@ -1,6 +1,10 @@
 import './Tile.css'
 
-const Tile = ({image, number}) => {
+interface Props {
+    image?: string,
+    number: number
+}
+const Tile = ({image, number}: Props) => {
 
     if(number % 2 == 0){
         return(
