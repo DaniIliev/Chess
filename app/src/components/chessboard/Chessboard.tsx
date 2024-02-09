@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import Tile from '../tile/Tile';
 import './Chessboard.css'
 import { Piece, PieceType, TeamType } from '../../types';
+import * as referee from '../../referee/Referee'
 
 const horizontalAxis = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const verticalAxis = ['1','2','3','4','5','6','7','8']
@@ -86,8 +87,16 @@ export default function Chessboard(){
             setPieces((value) => {
                 const pieses = value.map((p) => {
                     if(p.x == gridX && p.y === gridY){
-                        p.x = x;
-                        p.y = y
+                        const validMove = referee.isValidMove(gridX, gridY, x, y, p.type, p.team)
+
+                        if(validMove){
+                            p.x = x;
+                            p.y = y
+                        }else{
+                            activePiece.style.position = 'relative'
+                            activePiece.style.removeProperty('left')
+                            activePiece.style.removeProperty('top')
+                        }
                     }
                     return p
                 })
